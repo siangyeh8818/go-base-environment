@@ -1,18 +1,20 @@
-FROM centos:7
+FROM golang:1.12
 
-#RUN yum update
-RUN yum -y install wget curl
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y vim && \
+    apt-get clean
 
-RUN wget https://storage.googleapis.com/golang/go1.7.3.linux-amd64.tar.gz
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y vim-nox && \
+    apt-get clean
 
-RUN tar -zxf go1.7.3.linux-amd64.tar.gz -C /usr/local/
+RUN apt-get install -y ctags && apt-get clean
 
-RUN mkdir /Golang
+# VIM plugin for go
+RUN git clone https://github.com/VundleVim/Vundle.vim.git ~/.vim/bundle/Vundle.vim
 
-ENV GOROOT=/usr/local/go
-ENV GOBIN=$GOROOT/bin
-ENV GOPKG=$GOROOT/pkg/tool/linux_amd64
-ENV export GOARCH=amd64
-ENV GOOS=linux
-ENV GOPATH=/Golang
-ENV PATH=$PATH:$GOBIN:$GOPKG:$GOPATH/bin
+
+COPY vimrc /root/.vimrc
+RUN cd /go
+RUN echo -ne '\n' |vim +PluginInstall +qall
+RUN echo -ne '\n' |vim  +GoInstallBinaries +qall; exit 0
+RUN go get -u github.com/kardianos/govendor

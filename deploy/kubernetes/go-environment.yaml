@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
       - name: go-base
-        image: siangyeh8818/go-base-environment:v1.7.3
+        image: siangyeh8818/go-base-environment:v1.12
         imagePullPolicy: Always
         volumeMounts:
         - mountPath: /etc/localtime
